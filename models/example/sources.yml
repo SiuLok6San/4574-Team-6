@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: web_data
+    database: LOAD
+    schema: WEB_SCHEMA
+    tables:
+    - name: orders
