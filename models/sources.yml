@@ -9,3 +9,12 @@ sources:
       - name: RETURNS
       - name: HR_JOINS
       - name: HR_QUITS
+
+  - name: web_schema
+    database: LOAD
+    schema: WEB_SCHEMA
+    tables:
+      - name: ITEM_VIEWS
+      - name: ORDERS
+      - name: PAGE_VIEWS
+      - name: SESSIONS
