@@ -1,4 +1,4 @@
-select*
+select
     client_id,
     ip,
     os,
@@ -7,5 +7,4 @@ select*
     _fivetran_deleted,
     _fivetran_id,
     _fivetran_synced
-
 from {{ source('web_schema', 'SESSIONS') }}
