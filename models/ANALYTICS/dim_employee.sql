@@ -1,6 +1,6 @@
 select
     employee_id,
-    name,
+    employee_name,
     city,
     address,
     title,

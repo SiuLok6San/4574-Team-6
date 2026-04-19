@@ -3,7 +3,7 @@ with joins as (
     select
         employee_id,
         hire_date,
-        name,
+        employee_name,
         city,
         address,
         title,
@@ -23,7 +23,7 @@ quits as (
 
 select
     j.employee_id,
-    j.name,
+    j.employee_name,
     j.city,
     j.address,
     j.title,
