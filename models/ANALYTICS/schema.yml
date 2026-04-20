@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: dim_employee
+    description: One row per employee, including join and quit status.
+    columns:
+      - name: employee_id
+        description: Unique employee identifier.
+        tests:
+          - unique
+          - not_null
+      - name: employment_status
+        description: Whether the employee is still active or has quit.
+
+  - name: dim_client
+    description: One row per client observed in website sessions.
+    columns:
+      - name: client_id
+        description: Unique client identifier.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_item
+    description: One row per item observed in item views.
+    columns:
+      - name: item_name
+        description: Name of the plant item.
+        tests:
+          - not_null
+
+  - name: fact_order
+    description: One row per order after deduplicating duplicate order IDs.
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        tests:
+          - unique
+          - not_null
+      - name: session_id
+        description: Session associated with the order.
+        tests:
+          - not_null
+
+  - name: fact_session
+    description: One row per website session summarizing funnel behavior.
+    columns:
+      - name: session_id
+        description: Unique session identifier.
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        description: Client associated with the session.
+      - name: placed_order
+        description: 1 if at least one order was placed in the session.
+
+  - name: daily_finances
+    description: Daily summary of expenses, orders, shipping revenue, and returns.
+    columns:
+      - name: date_day
+        description: Calendar day for the aggregated metrics.
+        tests:
+          - not_null
