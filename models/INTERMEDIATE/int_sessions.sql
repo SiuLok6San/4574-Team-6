@@ -4,9 +4,10 @@ with ranked as (
         *,
         row_number() over (
             partition by session_id
-            order by session_at
+            order by session_at asc
         ) as rn
     from {{ ref('WEB_SESSIONS') }}
+    where session_id is not null
 
 )
 
