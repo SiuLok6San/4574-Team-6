@@ -6,15 +6,53 @@ sources:
     schema: GOOGLE_DRIVE
     tables:
       - name: EXPENSES
-      - name: RETURNS
+        loaded_at_field: _FIVETRAN_SYNCED
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
       - name: HR_JOINS
+        loaded_at_field: _FIVETRAN_SYNCED
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
       - name: HR_QUITS
+        loaded_at_field: _FIVETRAN_SYNCED
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
+      - name: RETURNS
+        loaded_at_field: _FIVETRAN_SYNCED
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
 
   - name: web_schema
     database: LOAD
     schema: WEB_SCHEMA
     tables:
-      - name: ITEM_VIEWS
-      - name: ORDERS
-      - name: PAGE_VIEWS
       - name: SESSIONS
+        loaded_at_field: _fivetran_synced
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
+      - name: PAGE_VIEWS
+        loaded_at_field: _fivetran_synced
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
+      - name: ITEM_VIEWS
+        loaded_at_field: _fivetran_synced
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
+
+      - name: ORDERS
+        loaded_at_field: _fivetran_synced
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 7, period: day}
