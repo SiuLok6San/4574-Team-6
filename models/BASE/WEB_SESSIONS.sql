@@ -2,7 +2,7 @@ select
     client_id,
     ip,
     os,
-    session_at,
+    try_to_timestamp(session_at) as session_at,
     session_id,
     "_fivetran_deleted" as _fivetran_deleted,
     "_fivetran_id" as _fivetran_id,
