@@ -2,85 +2,186 @@ version: 2
 
 models:
   - name: dim_employee
-    description: One row per employee with employment status.
+    description: One row per employee, including both active employees and employees who have already quit.
     columns:
       - name: employee_id
-        description: Unique employee identifier.
+        description: Unique identifier for each employee.
         tests:
           - unique
           - not_null
       - name: employee_name
-        description: Employee full name.
+        description: Full name of the employee.
+      - name: city
+        description: City where the employee is based.
+      - name: address
+        description: Address associated with the employee record.
+      - name: title
+        description: Job title of the employee.
+      - name: annual_salary
+        description: Annual salary recorded for the employee.
+      - name: hire_date
+        description: Date when the employee joined the company.
+      - name: quit_date
+        description: Date when the employee quit, if applicable.
       - name: employment_status
-        description: Indicates whether the employee is active or has quit.
+        description: Employment status derived from join and quit information, such as active or quit.
 
   - name: dim_client
-    description: One row per client observed in website sessions.
+    description: One row per client based on the latest available session-level information.
     columns:
       - name: client_id
-        description: Unique client identifier.
+        description: Unique identifier for each client.
         tests:
           - unique
           - not_null
+      - name: latest_session_at
+        description: Timestamp of the most recent observed session for the client.
+      - name: latest_os
+        description: Latest observed operating system used by the client.
+      - name: latest_ip
+        description: Latest observed IP address for the client.
 
   - name: dim_item
-    description: One row per item observed in item views.
+    description: One row per item, summarizing price variation and item-level engagement metrics.
     columns:
       - name: item_name
-        description: Item name.
+        description: Name of the item.
         tests:
+          - unique
           - not_null
-      - name: price_per_unit
-        description: Price of one unit of the item.
+      - name: min_price_per_unit
+        description: Minimum observed unit price for the item across item view records.
+      - name: max_price_per_unit
+        description: Maximum observed unit price for the item across item view records.
+      - name: price_variant_count
+        description: Number of distinct observed prices for the item.
+      - name: item_view_count
+        description: Total number of item-view events recorded for the item.
+      - name: unique_session_count
+        description: Number of distinct sessions in which the item was viewed.
+      - name: total_add_to_cart_qty
+        description: Total quantity of the item added to cart across all sessions.
+      - name: total_remove_from_cart_qty
+        description: Total quantity of the item removed from cart across all sessions.
 
   - name: fact_session
-    description: One row per session summarizing website behavior and funnel steps.
+    description: One row per session, summarizing website behavior, funnel steps, cart activity, and ordering activity.
     columns:
+      - name: client_id
+        description: Identifier of the client associated with the session.
       - name: session_id
-        description: Unique session identifier.
+        description: Unique identifier for the session.
         tests:
           - unique
           - not_null
-      - name: client_id
-        description: Client associated with the session.
+      - name: session_at
+        description: Timestamp when the session occurred.
+      - name: os
+        description: Operating system used during the session.
+      - name: ip
+        description: IP address recorded for the session.
+      - name: viewed_landing_page
+        description: Indicator showing whether the landing page was viewed during the session.
+      - name: viewed_shop_plants
+        description: Indicator showing whether the shop plants page was viewed during the session.
+      - name: viewed_cart
+        description: Indicator showing whether the cart page was viewed during the session.
+      - name: viewed_item
+        description: Indicator showing whether at least one item was viewed during the session.
+      - name: item_view_count
+        description: Number of item-view events recorded in the session.
+      - name: total_add_to_cart_qty
+        description: Total quantity of items added to cart during the session.
+      - name: total_remove_from_cart_qty
+        description: Total quantity of items removed from cart during the session.
       - name: placed_order
-        description: 1 if the session resulted in at least one order.
+        description: Indicator showing whether the session resulted in at least one order.
+      - name: num_orders
+        description: Number of orders placed in the session.
+      - name: first_page_view_at
+        description: Timestamp of the first page-view event recorded in the session.
 
   - name: fact_order
-    description: One row per order after deduplicating duplicate order IDs.
+    description: One row per order, including order details and return or refund summary information.
     columns:
       - name: order_id
-        description: Unique order identifier.
+        description: Unique identifier for the order.
         tests:
           - unique
           - not_null
       - name: session_id
-        description: Session associated with the order.
+        description: Identifier of the session associated with the order.
         tests:
           - not_null
+      - name: order_at
+        description: Timestamp when the order was placed.
+      - name: client_name
+        description: Client name recorded on the order.
+      - name: payment_method
+        description: Payment method used for the order.
+      - name: shipping_address
+        description: Shipping address recorded for the order.
+      - name: shipping_cost
+        description: Shipping cost charged for the order.
+      - name: phone
+        description: Phone number associated with the order.
       - name: state
-        description: Shipping state for the order.
+        description: State associated with the shipping address of the order.
+      - name: tax_rate
+        description: Tax rate applied to the order.
+      - name: first_returned_at
+        description: Earliest return date associated with the order, if any.
+      - name: refunded_flag
+        description: Indicator showing whether the order had at least one refunded return.
+      - name: return_record_count
+        description: Number of return records associated with the order.
 
   - name: daily_finances
-    description: Daily summary of expenses, orders, shipping revenue, and returns.
+    description: Daily summary of expenses, orders, shipping revenue, returns, and refunded returns.
     columns:
       - name: date_day
-        description: Calendar date for the aggregated metrics.
+        description: Calendar day for the daily finance summary.
         tests:
           - not_null
+      - name: total_expenses
+        description: Total expenses recorded for the day.
+      - name: total_orders
+        description: Total number of orders recorded for the day.
+      - name: shipping_revenue
+        description: Total shipping revenue recorded for the day.
+      - name: total_returns
+        description: Total number of returns recorded for the day.
+      - name: total_refunded_orders
+        description: Total number of refunded returned orders recorded for the day.
 
   - name: fact_return
-    description: One row per returned order.
+    description: One row per returned order, summarizing the return date and refund information.
     columns:
       - name: order_id
-        description: Order associated with the return.
+        description: Identifier of the order that was returned.
         tests:
           - not_null
-      - name: is_refunded_flag
-        description: 1 if the returned order was refunded.
+      - name: returned_at
+        description: Date of the first recorded return for the order.
+      - name: refunded_flag
+        description: Indicator showing whether the return was refunded.
+      - name: return_record_count
+        description: Number of return records associated with the returned order.
 
   - name: funnel_summary
-    description: Aggregated funnel summary across all website sessions.
+    description: Aggregate funnel summary across all sessions, counting how many sessions reached each stage.
     columns:
       - name: total_sessions
-        description: Total number of sessions included in the funnel.
+        description: Total number of sessions included in the funnel summary.
+      - name: sessions_viewed_landing_page
+        description: Number of sessions that viewed the landing page.
+      - name: sessions_viewed_shop_plants
+        description: Number of sessions that viewed the shop plants page.
+      - name: sessions_viewed_item
+        description: Number of sessions that viewed at least one item.
+      - name: sessions_viewed_cart
+        description: Number of sessions that viewed the cart page.
+      - name: sessions_added_to_cart
+        description: Number of sessions with at least one add-to-cart action.
+      - name: sessions_placed_order
+        description: Number of sessions that placed at least one order.

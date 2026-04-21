@@ -1,8 +1,7 @@
 select
     order_id,
-    returned_at,
-    case
-        when is_refunded = 'yes' then 1
-        else 0
-    end as is_refunded_flag
-from {{ ref('GOOGLEDRIVE_RETURNS') }}
+    first_returned_at as returned_at,
+    refunded_flag,
+    return_record_count
+from {{ ref('int_order_returns') }}
+where return_record_count > 0
