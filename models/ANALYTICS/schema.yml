@@ -2,15 +2,17 @@ version: 2
 
 models:
   - name: dim_employee
-    description: One row per employee, including join and quit status.
+    description: One row per employee with employment status.
     columns:
       - name: employee_id
         description: Unique employee identifier.
         tests:
           - unique
           - not_null
+      - name: employee_name
+        description: Employee full name.
       - name: employment_status
-        description: Whether the employee is still active or has quit.
+        description: Indicates whether the employee is active or has quit.
 
   - name: dim_client
     description: One row per client observed in website sessions.
@@ -25,9 +27,24 @@ models:
     description: One row per item observed in item views.
     columns:
       - name: item_name
-        description: Name of the plant item.
+        description: Item name.
         tests:
           - not_null
+      - name: price_per_unit
+        description: Price of one unit of the item.
+
+  - name: fact_session
+    description: One row per session summarizing website behavior and funnel steps.
+    columns:
+      - name: session_id
+        description: Unique session identifier.
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        description: Client associated with the session.
+      - name: placed_order
+        description: 1 if the session resulted in at least one order.
 
   - name: fact_order
     description: One row per order after deduplicating duplicate order IDs.
@@ -41,24 +58,29 @@ models:
         description: Session associated with the order.
         tests:
           - not_null
-
-  - name: fact_session
-    description: One row per website session summarizing funnel behavior.
-    columns:
-      - name: session_id
-        description: Unique session identifier.
-        tests:
-          - unique
-          - not_null
-      - name: client_id
-        description: Client associated with the session.
-      - name: placed_order
-        description: 1 if at least one order was placed in the session.
+      - name: state
+        description: Shipping state for the order.
 
   - name: daily_finances
     description: Daily summary of expenses, orders, shipping revenue, and returns.
     columns:
       - name: date_day
-        description: Calendar day for the aggregated metrics.
+        description: Calendar date for the aggregated metrics.
         tests:
           - not_null
+
+  - name: fact_return
+    description: One row per returned order.
+    columns:
+      - name: order_id
+        description: Order associated with the return.
+        tests:
+          - not_null
+      - name: is_refunded_flag
+        description: 1 if the returned order was refunded.
+
+  - name: funnel_summary
+    description: Aggregated funnel summary across all website sessions.
+    columns:
+      - name: total_sessions
+        description: Total number of sessions included in the funnel.
