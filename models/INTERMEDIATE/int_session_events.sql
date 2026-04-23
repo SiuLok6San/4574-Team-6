@@ -16,6 +16,7 @@ item_views as (
     select
         session_id,
         max(1) as viewed_item,
+        count(*) as item_view_count,
         sum(coalesce(add_to_cart_quantity, 0)) as total_add_to_cart_qty,
         sum(coalesce(remove_from_cart_quantity, 0)) as total_remove_from_cart_qty
     from {{ ref('WEB_ITEM_VIEWS') }}
@@ -40,6 +41,7 @@ select
     coalesce(p.viewed_shop_plants, 0) as viewed_shop_plants,
     coalesce(p.viewed_cart, 0) as viewed_cart,
     coalesce(i.viewed_item, 0) as viewed_item,
+    coalesce(i.item_view_count, 0) as item_view_count,
     coalesce(i.total_add_to_cart_qty, 0) as total_add_to_cart_qty,
     coalesce(i.total_remove_from_cart_qty, 0) as total_remove_from_cart_qty,
     coalesce(o.placed_order, 0) as placed_order,
