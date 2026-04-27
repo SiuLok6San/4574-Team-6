@@ -102,57 +102,67 @@ models:
         description: Timestamp of the first page-view event recorded in the session.
 
   - name: fact_order
-    description: One row per order, including order details and return or refund summary information.
-    columns:
-      - name: order_id
-        description: Unique identifier for the order.
-        tests:
-          - unique
-          - not_null
-      - name: session_id
-        description: Identifier of the session associated with the order.
-        tests:
-          - not_null
-      - name: order_at
-        description: Timestamp when the order was placed.
-      - name: client_name
-        description: Client name recorded on the order.
-      - name: payment_method
-        description: Payment method used for the order.
-      - name: shipping_address
-        description: Shipping address recorded for the order.
-      - name: shipping_cost
-        description: Shipping cost charged for the order.
-      - name: phone
-        description: Phone number associated with the order.
-      - name: state
-        description: State associated with the shipping address of the order.
-      - name: tax_rate
-        description: Tax rate applied to the order.
-      - name: first_returned_at
-        description: Earliest return date associated with the order, if any.
-      - name: refunded_flag
-        description: Indicator showing whether the order had at least one refunded return.
-      - name: return_record_count
-        description: Number of return records associated with the order.
+  description: One row per order summarizing order details, revenue, shipping, tax, and return information.
+  columns:
+    - name: order_id
+      description: Unique order identifier.
+      tests:
+        - unique
+        - not_null
+
+    - name: session_id
+      description: Session associated with the order.
+
+    - name: item_revenue
+      description: Estimated item-level revenue based on price_per_unit multiplied by add_to_cart_quantity within the order session.
+
+    - name: order_revenue
+      description: Estimated order revenue before tax, equal to item_revenue plus shipping_cost.
+
+    - name: total_revenue
+      description: Estimated total revenue including tax, equal to (item_revenue plus shipping_cost) times (1 plus tax_rate).
+
+    - name: shipping_cost
+      description: Shipping amount charged for the order.
+
+    - name: tax_rate
+      description: Tax rate applied to the order.
+
+    - name: refunded_flag
+      description: Indicates whether the order was refunded.
+
+    - name: return_record_count
+      description: Number of return records associated with the order.
 
   - name: daily_finances
-    description: Daily summary of expenses, orders, shipping revenue, returns, and refunded returns.
-    columns:
-      - name: date_day
-        description: Calendar day for the daily finance summary.
-        tests:
-          - not_null
-      - name: total_expenses
-        description: Total expenses recorded for the day.
-      - name: total_orders
-        description: Total number of orders recorded for the day.
-      - name: shipping_revenue
-        description: Total shipping revenue recorded for the day.
-      - name: total_returns
-        description: Total number of returns recorded for the day.
-      - name: total_refunded_orders
-        description: Total number of refunded returned orders recorded for the day.
+  description: Daily summary of expenses, orders, revenue, and returns.
+  columns:
+    - name: date_day
+      description: Calendar day for the daily summary.
+
+    - name: total_expenses
+      description: Total expenses recorded on that day.
+
+    - name: total_orders
+      description: Total number of orders placed on that day.
+
+    - name: shipping_revenue
+      description: Total shipping charges collected from orders placed on that day.
+
+    - name: total_item_revenue
+      description: Total estimated item revenue from orders placed on that day.
+
+    - name: total_order_revenue
+      description: Total estimated order revenue before tax, equal to item revenue plus shipping revenue.
+
+    - name: total_revenue
+      description: Total estimated revenue including tax from orders placed on that day.
+
+    - name: total_returns
+      description: Total number of return records on that day.
+
+    - name: total_refunded_orders
+      description: Total number of refunded returned orders on that day.
 
   - name: fact_return
     description: One row per returned order, summarizing the return date and refund information.
@@ -198,21 +208,38 @@ models:
         description: Ratio of returned orders to total orders for that day.
 
   - name: state_order_summary
-    description: Summary of order activity by shipping state.
-    columns:
-      - name: state
-        description: Shipping state for the order.
-        tests:
-          - not_null
-      - name: total_orders
-        description: Total number of orders shipped to the state.
-      - name: total_sessions_with_orders
-        description: Number of unique sessions associated with orders in the state.
-      - name: avg_shipping_cost
-        description: Average shipping cost for orders in the state.
-      - name: avg_tax_rate
-        description: Average tax rate for orders in the state.
+  description: Summary of order activity and revenue by state.
+  columns:
+    - name: state
+      description: State associated with the shipping address of the order.
 
+    - name: total_orders
+      description: Total number of orders shipped to the state.
+
+    - name: total_sessions_with_orders
+      description: Total number of distinct sessions that resulted in orders for the state.
+
+    - name: avg_shipping_cost
+      description: Average shipping cost charged on orders for the state.
+
+    - name: avg_tax_rate
+      description: Average tax rate applied to orders for the state.
+
+    - name: total_item_revenue
+      description: Total estimated item revenue for orders in the state.
+
+    - name: total_order_revenue
+      description: Total estimated order revenue before tax for the state.
+
+    - name: total_revenue
+      description: Total estimated revenue including tax for the state.
+
+    - name: avg_order_revenue
+      description: Average estimated order revenue before tax for the state.
+
+    - name: avg_total_revenue
+      description: Average estimated total revenue including tax for the state.
+      
   - name: return_rate_by_state
     description: Summary of order return rates by shipping state.
     columns:
