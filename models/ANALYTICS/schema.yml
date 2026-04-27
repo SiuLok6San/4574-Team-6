@@ -102,8 +102,8 @@ models:
         description: Timestamp of the first page-view event recorded in the session.
 
   - name: fact_order
-  description: One row per order summarizing order details, revenue, shipping, tax, and return information.
-  columns:
+    description: One row per order summarizing order details, revenue, shipping, tax, and return information.
+    columns:
     - name: order_id
       description: Unique order identifier.
       tests:
@@ -135,8 +135,8 @@ models:
       description: Number of return records associated with the order.
 
   - name: daily_finances
-  description: Daily summary of expenses, orders, revenue, and returns.
-  columns:
+    description: Daily summary of expenses, orders, revenue, and returns.
+    columns:
     - name: date_day
       description: Calendar day for the daily summary.
 
@@ -208,8 +208,8 @@ models:
         description: Ratio of returned orders to total orders for that day.
 
   - name: state_order_summary
-  description: Summary of order activity and revenue by state.
-  columns:
+    description: Summary of order activity and revenue by state.
+    columns:
     - name: state
       description: State associated with the shipping address of the order.
 
