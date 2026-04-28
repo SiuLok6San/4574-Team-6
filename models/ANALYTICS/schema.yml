@@ -198,20 +198,32 @@ models:
         description: Ratio of returned orders to total orders for that day.
 
   - name: state_order_summary
-    description: Summary of order activity by shipping state.
+    description: Summary of order activity by shipping state, including ISO subdivision codes for US mapping and a tiered order-volume field used to control choropleth colors in Preset.
     columns:
       - name: state
-        description: Shipping state for the order.
+        description: Shipping state associated with the order.
         tests:
           - not_null
+
+      - name: state_iso_code
+        description: ISO 3166-2 code for the US state, used in Preset country map visualizations.
+        tests:
+          - not_null
+
       - name: total_orders
         description: Total number of orders shipped to the state.
+
       - name: total_sessions_with_orders
-        description: Number of unique sessions associated with orders in the state.
+        description: Number of distinct sessions associated with orders in the state.
+
       - name: avg_shipping_cost
-        description: Average shipping cost for orders in the state.
+        description: Average shipping cost across orders shipped to the state.
+
       - name: avg_tax_rate
-        description: Average tax rate for orders in the state.
+        description: Average tax rate across orders shipped to the state.
+
+      - name: order_volume_tier
+        description: Discrete order-volume tier used to control map color intensity in Preset, where higher values indicate higher order-volume classes.
 
   - name: return_rate_by_state
     description: Summary of order return rates by shipping state.
