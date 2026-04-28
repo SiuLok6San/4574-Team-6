@@ -10,7 +10,10 @@ with orders as (
         shipping_cost,
         phone,
         state,
-        tax_rate
+        tax_rate,
+        item_revenue,  
+        order_revenue,  
+        total_revenue   
     from {{ ref('int_orders') }}
 
 ),
@@ -38,6 +41,9 @@ select
     o.phone,
     o.state,
     o.tax_rate,
+    o.item_revenue,
+    o.order_revenue,    
+    o.total_revenue,    
     r.first_returned_at,
     coalesce(r.refunded_flag, 0) as refunded_flag,
     coalesce(r.return_record_count, 0) as return_record_count
