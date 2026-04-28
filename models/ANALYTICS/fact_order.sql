@@ -12,4 +12,7 @@ select
     first_returned_at,
     refunded_flag,
     return_record_count
+    item_revenue, 
+    order_revenue,  
+    total_revenue
 from {{ ref('int_order_returns') }}
