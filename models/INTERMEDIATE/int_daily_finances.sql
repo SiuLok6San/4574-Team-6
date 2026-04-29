@@ -13,8 +13,13 @@ orders as (
     select
         cast(order_at as date) as date_day,
         count(*) as total_orders,
-        sum(coalesce(shipping_cost, 0)) as shipping_revenue
-    from {{ ref('int_orders') }}
+        sum(coalesce(shipping_cost, 0)) as shipping_revenue,
+
+        sum(case when coalesce(refunded_flag, 0) = 0 then coalesce(item_revenue, 0) else 0 end) as total_item_revenue,
+        sum(case when coalesce(refunded_flag, 0) = 0 then coalesce(order_revenue, 0) else 0 end) as total_order_revenue,
+        sum(case when coalesce(refunded_flag, 0) = 0 then coalesce(total_revenue, 0) else 0 end) as total_revenue
+
+    from {{ ref('fact_order') }}
     group by 1
 
 ),
